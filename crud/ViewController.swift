@@ -2,7 +2,9 @@ import UIKit
 import RealmSwift
 import SnapKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, IconWithLabelViewDelegate {
+  
+    
     
     let realm = try! Realm()
     
@@ -31,7 +33,6 @@ class ViewController: UIViewController {
         return textfield
     }()
 
-    
     lazy var button: UIButton = {
         let button = UIButton()
         button.setTitle("tap me", for: .normal)
@@ -49,6 +50,23 @@ class ViewController: UIViewController {
         return tableView
     }()
     
+    lazy var iconWithText: IconWithLabelView = {
+        let view = IconWithLabelView()
+        view.configure(iconName: "person.fill", title: "I’ll pick it up myself")
+        view.delegate = self
+        return view
+    }()
+    
+    
+    lazy var iconWithText2: IconWithLabelView2 = {
+        let view = IconWithLabelView2()
+        view.configure(iconName: "person.fill", title: "I’ll pick it up myself")
+        view.action = { [weak self] in
+            print("button tapped")
+        }
+        return view
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +79,11 @@ class ViewController: UIViewController {
         view.addSubview(surname)
         view.addSubview(password)
         view.addSubview(button)
-        view.addSubview(tableView)
+//        view.addSubview(tableView)
+        view.addSubview(iconWithText)
+        view.addSubview(iconWithText2)
+
+        
         view.backgroundColor = .white
         
         name.snp.makeConstraints { make in
@@ -87,11 +109,22 @@ class ViewController: UIViewController {
             make.height.equalTo(40)
         }
         
-        tableView.snp.makeConstraints { make in
+        iconWithText.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(12)
             make.top.equalTo(button.snp.bottom).offset(12)
-            make.bottom.equalToSuperview()
+//            make.bottom.equalToSuperview().
         }
+        iconWithText2.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(12)
+            make.top.equalTo(iconWithText.snp.bottom).offset(12)
+//            make.bottom.equalToSuperview().
+        }
+        
+//        tableView.snp.makeConstraints { make in
+//            make.leading.trailing.equalToSuperview().inset(12)
+//            make.top.equalTo(button.snp.bottom).offset(12)
+//            make.bottom.equalToSuperview()
+//        }
     }
     
     @objc func buttonTapped() {
@@ -114,6 +147,9 @@ class ViewController: UIViewController {
         getUsers()
     }
     
+    func iconButtonTapped() {
+        print("tapped")
+    }
     
     private func getUsers() {
         let users = realm.objects(User.self)
